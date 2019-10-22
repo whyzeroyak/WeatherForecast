@@ -1,0 +1,34 @@
+apply plugin: 'com.android.application' //应用了一个插件，表示是应用程序模块而不是库模块(com.android.lib)
+//应用程序模块可以直接运行，库模块只能作于代码库依附于别的应用程序模块来运行
+android {
+    compileSdkVersion 24    //24表示使用Android7.0的SDK编译
+    buildToolsVersion "29.0.2"  //项目构建工具(Gradle)的版本
+    defaultConfig {
+        applicationId "com.example.kaisa.weatherforecast"
+        minSdkVersion 15    //最低的Android兼容版本，15表示Android4.0
+        targetSdkVersion 24 //通过充分测试的最高版本，24表示Android7.0
+        versionCode 1   //项目的版本号
+        versionName "1.0"   //项目的版本名
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {    //指定生成安装文件的相关配置，一般包括debug和release
+        // debug指定测试版配置，可忽略；release指定正式版配置
+        release {
+            minifyEnabled false //表示是否对代码进行混淆
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }   //指定用于混淆代码的规则文件，proguard-android.txt位于AndroidSDK，是所有项目通用的混淆规则
+        //proguard-rules.pro位于项目根目录，是当前项目特有的混淆规则
+    }
+}
+
+dependencies {  //指定项目所有的依赖关系，包括本地依赖、库依赖和远程依赖
+    compile fileTree(dir: 'libs', include: ['*.jar'])   //本地依赖，指定libs目录下的jar文件
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    compile 'com.android.support:appcompat-v7:24.2.1'   //远程依赖，指定域名、组、版本号，会先检查本地有没有这个库的缓存
+    //如果没有，先联网下载，再添加到项目构建路径中
+    testCompile 'junit:junit:4.12'  //声明测试用例库
+    compile 'com.squareup.okhttp3:okhttp:3.4.1'
+    compile 'eu.the4thfloor.volley:com.android.volley:2015.05.28'
+}//库依赖，如依赖helper库，则写compile project(':helper')
